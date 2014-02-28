@@ -5,6 +5,12 @@ import time
 import subprocess
 from bs4 import BeautifulSoup
 
+'''
+请本着一颗仁爱之心使用。
+不要非法下载音乐，请尊重艺术作品版权。
+一个不尊重版权的民族，不值得拥有人权。
+'''
+
 #模拟浏览器进行页面抓取，虾米的某些数据必须有浏览器参数才可以访问，直接用urllib2.urlopen不好使
 def getPageSoup(pageUrl):
     hds = { 'User-Agent' : 'Mozilla/5.0 (XiamiLover NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36' }
