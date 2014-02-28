@@ -20,7 +20,7 @@ def getPageSoup(pageUrl):
     doc = resp.read()
     soup = BeautifulSoup(doc)
     return soup
-#从页面上获取最后听的一首歌的ID
+#从页面上获取用户最后听的一首歌的ID
 def getLatestSongId(user_id):
     song_list_url = 'http://www.xiami.com/space/charts-recent/u/'+user_id
     songlist_soup = getPageSoup(song_list_url)
@@ -29,7 +29,7 @@ def getLatestSongId(user_id):
         if '/song/' in song['href']:
             return song['href'][6:]
 
-#获取歌曲XML，并以BeautifulSoup对象返回
+#获取歌曲XML，解密并以BeautifulSoup对象返回
 def getSongSoup(song_id):
     song_url = 'http://www.xiami.com/song/playlist/id/'+song_id+'/object_name/default/object_id/0'
     song_soup = getPageSoup(song_url)
