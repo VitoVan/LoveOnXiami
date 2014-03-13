@@ -43,3 +43,44 @@ def getSongSoup(song_id):
                               ''.join([result[r][-1] for r in range(remainder)])).replace('^','0')
     song_soup.find('location').string = url
     return song_soup
+
+#循環監聽
+def startMonitor(user_id):
+    if user_id == '':
+        user_id = '8419837'
+    print 'Let be in love......'
+    global pre_song_id
+    global cur_song_id
+    global start_player_cmd
+    while True:
+        try:
+            cur_song_id = getLatestSongId(user_id)
+        except KeyboardInterrupt:
+            exit();
+        except:
+            print 'Something went wrong...I gonna try again.'
+        if pre_song_id == cur_song_id:
+            print "Don't worry, I'm working -- TIMESTAMP:" + str(time.time())
+            time.sleep(heartbeat_frequency)
+        else:
+            pre_song_id = cur_song_id
+#            subprocess.call(stop_player_cmd)
+            songSoup = getSongSoup(cur_song_id)
+            print songSoup.prettify().encode('utf8')
+            cur_song_addr = songSoup.find('location').string
+            start_player_cmd.append(cur_song_addr)
+            subprocess.Popen(start_player_cmd)
+
+#心跳頻率（秒）
+heartbeat_frequency = 10
+
+#歌曲ID
+pre_song_id = 0
+cur_song_id = 0
+
+#播放器命令
+start_player_cmd = ["/usr/bin/mplayer",'-volume','50']
+stop_player_cmd = ["/usr/bin/killall","mplayer"]
+
+
+startMonitor(raw_input('Input her/his ID (8419837) : \n'))
