@@ -64,9 +64,8 @@ def startMonitor(user_id):
             time.sleep(heartbeat_frequency)
         else:
             pre_song_id = cur_song_id
-#            subprocess.call(stop_player_cmd)
+            subprocess.call(stop_player_cmd)
             songSoup = getSongSoup(cur_song_id)
-            print songSoup.prettify().encode('utf8')
             cur_song_addr = songSoup.find('location').string
             start_player_cmd.append(cur_song_addr)
             subprocess.Popen(start_player_cmd)
