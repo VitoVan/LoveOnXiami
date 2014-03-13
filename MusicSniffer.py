@@ -3,8 +3,9 @@
 """
 filename: MusicSniffer.py
 author: Vito Van
+weibo: http://weibo.com/vitovan
 """
-
+import copy
 import re
 import urllib2
 import time
@@ -73,8 +74,9 @@ def startMonitor(user_id):
             subprocess.call(stop_player_cmd)
             songSoup = getSongSoup(cur_song_id)
             cur_song_addr = songSoup.find('location').string
-            start_player_cmd.append(cur_song_addr)
-            subprocess.Popen(start_player_cmd)
+            cur_player_cmd = copy.copy(start_player_cmd)
+            cur_player_cmd.append(cur_song_addr)
+            subprocess.Popen(cur_player_cmd)
 
 #心跳頻率（秒）
 heartbeat_frequency = 10
