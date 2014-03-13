@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+"""
+filename: MusicSniffer.py
+author: Vito Van
+"""
+
 import re
 import urllib2
 import time
