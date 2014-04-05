@@ -1,9 +1,10 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
 filename: MusicSniffer.py
 author: Vito Van
-weibo: http://weibo.com/vitovan
+mail: awesomevito@live.com
 """
 import copy
 import re
@@ -20,17 +21,18 @@ from bs4 import BeautifulSoup
 
 #模拟浏览器进行页面抓取，虾米的某些数据必须有浏览器参数才可以访问，直接用urllib2.urlopen不好使
 def getPageSoup(pageUrl):
+    #print 'FETCHING: \n' + pageUrl
     hds = { 'User-Agent' : 'Mozilla/5.0 (XiamiLover NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36' }
     req = urllib2.Request(url = pageUrl,headers = hds)
     opener = urllib2.build_opener()
     resp = opener.open(req)
     doc = resp.read()
-    soup = BeautifulSoup(doc)
-    return soup
+    return BeautifulSoup(doc)
 #从页面上获取用户最后听的一首歌的ID
 def getLatestSongId(user_id):
     song_list_url = 'http://www.xiami.com/space/charts-recent/u/'+user_id
     songlist_soup = getPageSoup(song_list_url)
+    #print '===This is the SONG LIST HTML: \n' + songlist_soup.prettify() + '\n===='
     songs = songlist_soup.find_all('a')
     for song in songs:
         if '/song/' in song['href']:
@@ -38,8 +40,9 @@ def getLatestSongId(user_id):
 
 #获取歌曲XML，解密并以BeautifulSoup对象返回
 def getSongSoup(song_id):
-    song_url = 'http://www.xiami.com/song/playlist/id/'+song_id+'/object_name/default/object_id/0'
+    song_url = 'http://www.xiami.com/song/playlist/id/'+str(song_id)+'/object_name/default/object_id/0'
     song_soup = getPageSoup(song_url)
+    #print '===This is the song XML: \n' + song_soup.prettify() + '\n===='
     song_address_code = song_soup.find('location').string
     #此部分为虾米链接解密算法，抄袭自：https://github.com/Flowerowl/xiami
     num = int(song_address_code[0])
@@ -54,8 +57,8 @@ def getSongSoup(song_id):
 #循環監聽
 def startMonitor(user_id):
     if user_id == '':
-        user_id = '8419837'
-    print 'Let be in love......'
+        user_id = '3610870'
+    print 'Love is going......'
     global pre_song_id
     global cur_song_id
     global start_player_cmd
@@ -63,20 +66,24 @@ def startMonitor(user_id):
         try:
             cur_song_id = getLatestSongId(user_id)
         except KeyboardInterrupt:
+            print "bye~my love"
             exit();
         except:
             print 'Something went wrong...I gonna try again.'
         if pre_song_id == cur_song_id:
-            print "Don't worry, I'm working -- TIMESTAMP:" + str(time.time())
+            #print "Don't worry, I'm working -- CUR_SID:"+str(cur_song_id)+" TIMESTAMP:" + str(time.time())
             time.sleep(heartbeat_frequency)
         else:
+            fh = open("NUL","w")
             pre_song_id = cur_song_id
-            subprocess.call(stop_player_cmd)
+            subprocess.call(stop_player_cmd,stdout=fh,stderr=fh)
             songSoup = getSongSoup(cur_song_id)
+            print "==== SONG INFO: ====\n TITLE: " + songSoup.find('title').string.replace('<![CDATA[','').replace(']]>','') + ' ALBUM: ' + songSoup.find('album_name').string.string.replace('[CDATA[','').replace(']]','') + " ARTIST: "+ songSoup.find('artist').string.string.replace('[CDATA[','').replace(']]','') + "\n"
             cur_song_addr = songSoup.find('location').string
             cur_player_cmd = copy.copy(start_player_cmd)
             cur_player_cmd.append(cur_song_addr)
-            subprocess.Popen(cur_player_cmd)
+            subprocess.Popen(cur_player_cmd,stdout=fh,stderr=fh)
+            fh.close()
 
 #心跳頻率（秒）
 heartbeat_frequency = 10
@@ -86,8 +93,7 @@ pre_song_id = 0
 cur_song_id = 0
 
 #播放器命令
-start_player_cmd = ["/usr/bin/mplayer",'-volume','50']
+start_player_cmd = ["/usr/bin/mplayer",'-quiet','-volume','50']
 stop_player_cmd = ["/usr/bin/killall","mplayer"]
-
 
 startMonitor(raw_input('Input her/his ID (8419837) : \n'))
