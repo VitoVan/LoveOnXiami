@@ -69,7 +69,7 @@ def startMonitor(user_id):
             print "bye~my love"
             exit();
         except:
-            print 'Something went wrong...I gonna try again.'
+            print 'Something went wrong...I gonna try again.  BECAUSE: ',ex
         if pre_song_id == cur_song_id:
             #print "Don't worry, I'm working -- CUR_SID:"+str(cur_song_id)+" TIMESTAMP:" + str(time.time())
             time.sleep(heartbeat_frequency)
