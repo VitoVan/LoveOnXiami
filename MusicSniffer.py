@@ -74,7 +74,7 @@ def startMonitor(user_id):
             #print "Don't worry, I'm working -- CUR_SID:"+str(cur_song_id)+" TIMESTAMP:" + str(time.time())
             time.sleep(heartbeat_frequency)
         else:
-            fh = open("NUL","w")
+            fh = open("NULL","w")
             pre_song_id = cur_song_id
             subprocess.call(stop_player_cmd,stdout=fh,stderr=fh)
             songSoup = getSongSoup(cur_song_id)
