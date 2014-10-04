@@ -57,7 +57,7 @@ def getSongSoup(song_id):
 #循環監聽
 def startMonitor(user_id):
     if user_id == '':
-        user_id = '3610870'
+        user_id = '8419837'
     print 'Love is going......'
     global pre_song_id
     global cur_song_id
