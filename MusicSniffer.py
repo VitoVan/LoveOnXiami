@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 #模拟浏览器进行页面抓取，虾米的某些数据必须有浏览器参数才可以访问，直接用urllib2.urlopen不好使
 def getPageSoup(pageUrl):
     #print 'FETCHING: \n' + pageUrl
-    hds = { 'User-Agent' : 'Mozilla/5.0 (XiamiLover NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36' }
+    hds = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36' }
     req = urllib2.Request(url = pageUrl,headers = hds)
     opener = urllib2.build_opener()
     resp = opener.open(req)
@@ -32,7 +32,7 @@ def getPageSoup(pageUrl):
 def getLatestSongId(user_id):
     song_list_url = 'http://www.xiami.com/space/charts-recent/u/'+user_id
     songlist_soup = getPageSoup(song_list_url)
-    #print '===This is the SONG LIST HTML: \n' + songlist_soup.prettify() + '\n===='
+    #print song_list_url+'\n===This is the SONG LIST HTML: \n' + songlist_soup.prettify() + '\n===='
     songs = songlist_soup.find_all('a')
     for song in songs:
         if '/song/' in song['href']:
@@ -42,7 +42,7 @@ def getLatestSongId(user_id):
 def getSongSoup(song_id):
     song_url = 'http://www.xiami.com/song/playlist/id/'+str(song_id)+'/object_name/default/object_id/0'
     song_soup = getPageSoup(song_url)
-    #print '===This is the song XML: \n' + song_soup.prettify() + '\n===='
+    #print song_url + '\n===This is the song XML: \n' + song_soup.prettify() + '\n===='
     song_address_code = song_soup.find('location').string
     #此部分为虾米链接解密算法，抄袭自：https://github.com/Flowerowl/xiami
     num = int(song_address_code[0])
